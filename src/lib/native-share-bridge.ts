@@ -66,18 +66,24 @@ export const shareNatively = async (data: NativeShareData): Promise<boolean> => 
 
   const { isNativeApp } = detectNativeApp();
 
-  // Get description text (without title to avoid duplication)
-  const descriptionText = data.description?.substring(0, 150) || '';
-  const descriptionPart = descriptionText ? `\n\n${descriptionText}${data.description && data.description.length > 150 ? '...' : ''}` : '';
+  // Prepare share content without repeating the title
+const descriptionText = data.description?.substring(0, 150) || '';
 
-  // Format share message with app download CTA - title only appears once at the start
-  const shareMessage = `${data.title}${descriptionPart}\n\n📰 Read full news on Bansgaon Sandesh\n🔗 ${data.url}\n\n📱 Download our app:\nhttps://play.google.com/store/apps/details?id=com.bansgaonsandesh.app\n\n🤝 Join Bansgaon Sandesh\nखबरों से जुड़ने के लिए अभी कॉल करें – 7376137111`;
+const descriptionPart = descriptionText
+  ? `${descriptionText}${data.description && data.description.length > 150 ? '...' : ''}`
+  : '';
 
-  const shareData = {
-    ...data,
-    text: shareMessage,
-    description: descriptionText,
-  };
+const shareMessage =
+  `${descriptionPart}\n\n` +
+  `📰 पूरी खबर पढ़ें: ${data.url}\n\n` +
+  `📱 Bansgaon Sandesh App डाउनलोड करें:\n` +
+  `https://play.google.com/store/apps/details?id=com.bansgaonsandesh.app`;
+
+const shareData = {
+  ...data,
+  text: shareMessage,
+  description: descriptionText,
+};
 
   // Try native bridge first
   if (isNativeApp && typeof (window as any).nativeShare === 'function') {
