@@ -144,11 +144,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
   useEffect(() => {
     const protectedRoutes = ['/create', '/profile']
 
-    if (isGuest && protectedRoutes.includes(pathname)) {
-      message.info('Please login to access this feature')
-      handleAuthAction('login')
-    }
-  }, [pathname, isGuest])
+    if (!isLoading && isGuest && protectedRoutes.includes(pathname)) {
+  message.info('Please login to access this feature')
+  handleAuthAction('login')
+}
+    }, [pathname, isGuest, isLoading])
 
   // Don't show layout for auth pages, admin pages, terms, or privacy pages
   if (pathname.startsWith('/auth') || pathname.startsWith('/admin') || pathname.startsWith('/terms') || pathname.startsWith('/privacy')) {
